@@ -27,10 +27,11 @@ import matplotlib.pyplot as plt
 
 
 
-counti=0
+
 candidate_list = pd.read_excel("Data.xlsx")
 cand_list = candidate_list[['ApplicationID', 'Name', 'Catergory', 'Caste', 'Caste Number','path']]
 print(list(candidate_list.columns))
+errorlist = [] 
 
 for ind in cand_list.index:
     name = cand_list['Name'][ind]
@@ -47,8 +48,19 @@ for ind in cand_list.index:
     extract = pytesseract.image_to_string(Image.open(image_path_in_colab)).lower()
     content = extract
     print(keys)
+    counti=0
+    error = []
     for key in keys :
         if  content.find(key.lower())>=0:
             counti+=1
             print(f"found key {key}")
     print(counti)
+    
+    if counti<8:
+        error.append(name)
+        print(error)
+        errorlist.append(error)
+
+
+
+print (errorlist)
