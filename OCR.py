@@ -36,29 +36,42 @@ errorlist = []
 for ind in cand_list.index:
     name = cand_list['Name'][ind]
     keys = name.split(' ')
-    keys.append(cand_list['Catergory'][ind])
+    keys.append('other backward')
     keys.append(cand_list['Caste'][ind])
     keys.append(str(cand_list['Caste Number'][ind]))
-    keys.append('2022')
-    keys.append('2023')
-    keys.append('2024')
+    
+    
     image_path_in_colab=cand_list['path'][ind]
     im = cv2.imread(image_path_in_colab, cv2.IMREAD_COLOR)
 
-    extract = pytesseract.image_to_string(Image.open(image_path_in_colab)).lower()
-    content = extract
-    print(keys)
-    counti=0
+    extract = pytesseract.image_to_string(Image.open(image_path_in_colab))
+    content = extract.lower()
+    index1=extract.find("CASTE")
+    index2=extract.find("NON-CREAMY")
+    if index1>=0 and index2>=0 :
+        part1=extract[index1:index2].lower()
+        part2=extract[index2:].lower()
+        print(f"{part1} \n {part2}")
+        
+    
+    #part !1 validation keys 
     error = []
+    counti=0
+    if part2.find("2022")>0 or part2.find("2023")>0 or part2.find("2024")>0 :
+        print ( name , "valid year")
+    else :
+        error.append(name)
+        print("invalid year of issue for " , name )
+
+
     for key in keys :
-        if  content.find(key.lower())>=0:
+        if  part1.find(key.lower())>=0:
             counti+=1
             print(f"found key {key}")
     print(counti)
     
-    if counti<8:
+    if counti < len(keys):
         error.append(name)
-        print(error)
         errorlist.append(error)
 
 
